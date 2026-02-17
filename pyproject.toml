@@ -1,0 +1,24 @@
+[project]
+name = "rag-intern-poc"
+version = "0.1.0"
+description = "GenAI RAG intern POC"
+requires-python = ">=3.11,<4.0"
+readme = "README.md"
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn>=0.23",
+  "python-dotenv>=1.0",
+  "pydantic>=2.0",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+ruff = "*"
+black = "*"
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
