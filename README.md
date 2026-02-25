@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # GenAI RAG — Drug-doc Q&A (local-only)
 
 **RAG over your documents:** ingest PDF/TXT → ask questions (e.g. about drugs) → get answers from your docs using **Chroma** + **sentence-transformers** + **Ollama**. No API keys.
