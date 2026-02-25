@@ -1,0 +1,30 @@
+# Env
+.venv/
+venv/
+env/
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# RAG
+chroma_db/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediQuery — Medical Doc Q&A</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  <style>
+    :root {
+      --teal: #0d9488;
+      --teal-light: #14b8a6;
+      --teal-dark: #0f766e;
+      --bg: #f0fdfa;
+      --card: #ffffff;
+      --text: #134e4a;
+      --text-muted: #5eead4;
+      --border: #99f6e4;
+      --success: #10b981;
+      --error: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #f0fdfa 0%, #ccfbf1 50%, #e0f2fe 100%);
+      min-height: 100vh;
+      color: var(--text);
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .logo {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .tagline {
+      font-size: 0.95rem;
+      color: var(--teal);
+      font-weight: 500;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 24px rgba(13, 148, 136, 0.08);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      transition: box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 8px 32px rgba(13, 148, 136, 0.12); }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--teal-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card h2 svg { flex-shrink: 0; }
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--bg);
+    }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--teal); background: rgba(13, 148, 136, 0.06); }
+    .dropzone input { display: none; }
+    .dropzone .icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 0.75rem;
+      background: linear-gradient(135deg, var(--teal-light), var(--teal));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dropzone .icon svg { width: 24px; height: 24px; color: white; }
+    .dropzone p { font-size: 0.9rem; color: var(--teal-dark); font-weight: 500; }
+    .dropzone span { font-size: 0.8rem; color: var(--teal); margin-top: 0.25rem; display: block; }
+    .dropzone .file-name {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--success);
+      font-weight: 500;
+    }
+    .upload-status {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      display: none;
+    }
+    .upload-status.success { display: block; background: rgba(16, 185, 129, 0.12); color: var(--success); }
+    .upload-status.error { display: block; background: rgba(220, 38, 38, 0.1); color: var(--error); }
+    .upload-status.loading { display: block; color: var(--teal); }
+    .ask-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .ask-row input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .ask-row input::placeholder { color: var(--text-muted); }
+    .ask-row input:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    }
+    .btn {
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--teal-light), var(--teal));
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4); }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .answer-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      display: none;
+    }
+    .answer-box.show { display: block; }
+    .answer-box .label { font-weight: 600; color: var(--teal-dark); margin-bottom: 0.5rem; }
+    .answer-box.loading { color: var(--teal); }
+    .answer-box.error { background: rgba(220, 38, 38, 0.08); border-color: rgba(220, 38, 38, 0.3); color: var(--error); }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: var(--teal);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p style="font-size:0.8rem;color:#0f766e;background:#ccfbf1;padding:0.5rem 0.75rem;border-radius:0.5rem;margin-bottom:1rem;">If this page is blank or you see "can't be reached", start the server first: double‑click <strong>START_SERVER.bat</strong> in the project folder, wait for "Uvicorn running", then open <strong>http://127.0.0.1:8000</strong></p>
+    <header>
+      <h1 class="logo">MediQuery</h1>
+      <p class="tagline">Upload medical docs. Ask in plain language.</p>
+    </header>
+
+    <div class="card">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Upload document
+      </h2>
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.text">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <p>Drop your file here or click to browse</p>
+        <span>PDF, TXT, or MD — max 20 MB</span>
+        <div class="file-name" id="fileName"></div>
+      </div>
+      <div class="upload-status" id="uploadStatus"></div>
+    </div>
+
+    <div class="card">
+      <h2>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Ask about your documents
+      </h2>
+      <div class="ask-row">
+        <input type="text" id="questionInput" placeholder="e.g. What is the dosing for aspirin?" autocomplete="off">
+        <button type="button" class="btn btn-primary" id="askBtn">Ask</button>
+      </div>
+      <div class="answer-box" id="answerBox"></div>
+    </div>
+
+    <footer>RAG-powered · Local & private</footer>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropzone = document.getElementById('dropzone');
+    const fileName = document.getElementById('fileName');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const questionInput = document.getElementById('questionInput');
+    const askBtn = document.getElementById('askBtn');
+    const answerBox = document.getElementById('answerBox');
+
+    function setUploadStatus(msg, type) {
+      uploadStatus.textContent = msg;
+      uploadStatus.className = 'upload-status ' + (type || '');
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) handleFile(f);
+    });
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files?.[0];
+      if (f) handleFile(f);
+    });
+
+    async function handleFile(file) {
+      const ext = (file.name || '').includes('.') ? '.' + file.name.split('.').pop().toLowerCase() : '';
+      if (!['.pdf', '.txt', '.md', '.text'].includes(ext)) {
+        setUploadStatus('Please choose a PDF, TXT, or MD file.', 'error');
+        return;
+      }
+      fileName.textContent = file.name;
+      setUploadStatus('Uploading & indexing…', 'loading');
+      const form = new FormData();
+      form.append('file', file);
+      try {
+        const r = await fetch('/ingest/upload', { method: 'POST', body: form });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          setUploadStatus(data.detail || 'Upload failed.', 'error');
+          return;
+        }
+        setUploadStatus(data.message || `Indexed ${data.chunks_added} chunks. You can ask questions now.`, 'success');
+      } catch (err) {
+        setUploadStatus('Network error. Is the server running?', 'error');
+      }
+    }
+
+    askBtn.addEventListener('click', ask);
+    questionInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') ask(); });
+
+    async function ask() {
+      const q = (questionInput.value || '').trim();
+      if (!q) return;
+      answerBox.className = 'answer-box show loading';
+      answerBox.innerHTML = '<span class="label">Answer</span><p>Thinking…</p>';
+      askBtn.disabled = true;
+      try {
+        const r = await fetch('/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const data = await r.json().catch(() => ({}));
+        answerBox.classList.remove('loading', 'error');
+        if (!r.ok) {
+          answerBox.classList.add('error');
+          answerBox.innerHTML = '<span class="label">Error</span><p>' + (data.detail || 'Request failed.') + '</p>';
+          return;
+        }
+        answerBox.innerHTML = '<span class="label">Answer</span><p>' + (data.answer || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</p>';
+      } catch (err) {
+        answerBox.classList.remove('loading').add('error');
+        answerBox.innerHTML = '<span class="label">Error</span><p>Network error. Is the server running?</p>';
+      } finally {
+        askBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

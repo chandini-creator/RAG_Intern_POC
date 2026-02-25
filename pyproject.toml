@@ -1,0 +1,23 @@
+# Optional: Poetry for dependency management (alternative to pip + requirements.txt)
+# Install Poetry: https://python-poetry.org/docs/#installation
+# Then: poetry install
+
+[tool.poetry]
+name = "genai-rag-phase1"
+version = "0.1.0"
+description = "Phase 1: FastAPI foundations for GenAI RAG internship"
+authors = ["Your Team"]
+readme = "README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = ">=0.109.0"
+uvicorn = { extras = ["standard"], version = ">=0.27.0" }
+pydantic = ">=2.5.0"
+pydantic-settings = ">=2.1.0"
+python-dotenv = ">=1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
